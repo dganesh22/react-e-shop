@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import { useAuth } from '../../CustomHook/Auth';
+import { useNavigate } from 'react-router-dom';
 
 const url = 'https://fakestoreapi.com'
 
@@ -10,6 +11,8 @@ const [username,setUsername] = useState("mor_2314")
 const [password,setPassword] = useState("83r5^_")
 
 const { setToken } = useAuth()
+
+const navigate = useNavigate()
  
 const submitHandler = async (e) => {
   e.preventDefault();
@@ -24,6 +27,8 @@ const submitHandler = async (e) => {
         toast.success("Login successful")
         console.log(`res =`, res.data)
         setToken(res.data.token)
+        localStorage.setItem("token", res.data.token)
+        navigate(`/`)
       }).catch(err => toast.error(err.message))
   } catch (err) {
     toast.error(err.message)

@@ -1,7 +1,27 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../CustomHook/Auth'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import useCart from '../../CustomHook/Cart'
 
 function Menu() {
+  // context values
+  const { contextData, setToken } = useAuth()
+  const { cartData } = useCart()
+    // router instance
+  const navigate = useNavigate()
+
+  // logout logic
+  const logout = async () => {
+      if(window.confirm(`Are you sure to logout?`)) {
+        setToken(false)
+        toast.success("Logout successfully")
+        navigate(`/`)
+      } else {
+        toast.warning("Logout terminated")
+      }
+  }
   
   const openSidebar = () => {
     document.getElementById("sideMenu").classList.add("active")
@@ -21,9 +41,18 @@ function Menu() {
 
                  <NavLink to={`/`} className="logo">React-E-Shop</NavLink>
 
-                 <NavLink to={`/cart`} className="cart">
-                    <i className="bi bi-cart-fill"></i>
-                 </NavLink>
+                 <div>
+                    <NavLink to={`/cart`} className="cart">
+                        <i className="bi bi-cart-fill"></i> <strong className='circle'> {cartData?.cart.length} </strong>
+                    </NavLink>
+
+                   {
+                      contextData.token ?  
+                      <button onClick={logout} className="btn btn-danger" style={{ marginLeft:'10px'}}>
+                        <i className="bi bi-box-arrow-right"></i>
+                      </button>: null 
+                   }
+                 </div>
             </div>
         </nav>
       </header>
